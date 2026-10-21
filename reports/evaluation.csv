@@ -1,0 +1,24 @@
+﻿id,category,expected_pass,before_pass,after_pass,issues
+correct_single,정상,True,True,True,
+correct_multi,정상,True,True,True,
+equivalent_decimal,정상,True,True,True,
+correct_unknown,정상,True,True,True,
+correct_healthy,정상,True,True,True,
+wrong_cpu,수치 불일치,False,True,False,metric_mismatch
+wrong_memory,수치 불일치,False,True,False,metric_mismatch
+wrong_status,상태 불일치,False,True,False,status_mismatch
+swapped_system_values,시스템 간 수치 혼동,False,True,False,"metric_mismatch, metric_mismatch"
+invented_system,미조회 시스템,False,True,False,"unsupported_system, missing_system"
+missing_system,조회 대상 누락,False,True,False,missing_system
+duplicate_system,중복 근거,False,True,False,duplicate_system
+missing_actions,필수 항목 누락,False,True,False,"missing_section, section_order"
+empty_limits,필수 항목 누락,False,True,False,missing_section
+unknown_as_zero,미확인 수치 단정,False,True,False,unknown_measurement
+extra_narrative_number,근거 밖 수치,False,True,False,metric_mismatch
+normality_contradiction,정상 단정,False,True,False,unsupported_healthy_claim
+confident_cause,가설 단정,False,True,False,unqualified_cause
+no_source,근거 없음,False,True,False,"missing_evidence, unsupported_system"
+bad_row_format,해석 불가 표기,False,True,False,"unparseable_evidence, missing_system"
+infinite_number,해석 불가 수치,False,True,False,"unparseable_evidence, missing_system"
+short_draft,짧은 답변,False,False,False,"unexpected_text, missing_section, missing_section, missing_section, missing_section, section_order, missing_system"
+legacy_correct_content,정확하지만 자유형 답변,True,True,False,"unexpected_text, missing_section, missing_section, missing_section, missing_section, section_order, missing_system"

@@ -1,0 +1,271 @@
+{
+  "summary": {
+    "before": {
+      "total": 23,
+      "invalid": 17,
+      "valid": 6,
+      "errors_detected": 1,
+      "errors_missed": 16,
+      "correct_rejected": 0,
+      "correct_accepted": 6,
+      "detection_rate": 0.058823529411764705,
+      "false_rejection_rate": 0.0,
+      "accuracy": 0.30434782608695654,
+      "mean_validation_ms": 4.5216571458655856e-05
+    },
+    "after": {
+      "total": 23,
+      "invalid": 17,
+      "valid": 6,
+      "errors_detected": 17,
+      "errors_missed": 0,
+      "correct_rejected": 1,
+      "correct_accepted": 5,
+      "detection_rate": 1.0,
+      "false_rejection_rate": 0.16666666666666666,
+      "accuracy": 0.9565217391304348,
+      "mean_validation_ms": 0.018515795945068417
+    },
+    "method": "23 fixed synthetic drafts; no LLM calls; same input per validator; includes one semantically correct legacy-format draft rejected by the strict contract; latency is local validation only, 100 repetitions per case"
+  },
+  "cases": [
+    {
+      "id": "correct_single",
+      "category": "정상",
+      "expected_pass": true,
+      "before_pass": true,
+      "after_pass": true,
+      "issues": []
+    },
+    {
+      "id": "correct_multi",
+      "category": "정상",
+      "expected_pass": true,
+      "before_pass": true,
+      "after_pass": true,
+      "issues": []
+    },
+    {
+      "id": "equivalent_decimal",
+      "category": "정상",
+      "expected_pass": true,
+      "before_pass": true,
+      "after_pass": true,
+      "issues": []
+    },
+    {
+      "id": "correct_unknown",
+      "category": "정상",
+      "expected_pass": true,
+      "before_pass": true,
+      "after_pass": true,
+      "issues": []
+    },
+    {
+      "id": "correct_healthy",
+      "category": "정상",
+      "expected_pass": true,
+      "before_pass": true,
+      "after_pass": true,
+      "issues": []
+    },
+    {
+      "id": "wrong_cpu",
+      "category": "수치 불일치",
+      "expected_pass": false,
+      "before_pass": true,
+      "after_pass": false,
+      "issues": [
+        "metric_mismatch"
+      ]
+    },
+    {
+      "id": "wrong_memory",
+      "category": "수치 불일치",
+      "expected_pass": false,
+      "before_pass": true,
+      "after_pass": false,
+      "issues": [
+        "metric_mismatch"
+      ]
+    },
+    {
+      "id": "wrong_status",
+      "category": "상태 불일치",
+      "expected_pass": false,
+      "before_pass": true,
+      "after_pass": false,
+      "issues": [
+        "status_mismatch"
+      ]
+    },
+    {
+      "id": "swapped_system_values",
+      "category": "시스템 간 수치 혼동",
+      "expected_pass": false,
+      "before_pass": true,
+      "after_pass": false,
+      "issues": [
+        "metric_mismatch",
+        "metric_mismatch"
+      ]
+    },
+    {
+      "id": "invented_system",
+      "category": "미조회 시스템",
+      "expected_pass": false,
+      "before_pass": true,
+      "after_pass": false,
+      "issues": [
+        "unsupported_system",
+        "missing_system"
+      ]
+    },
+    {
+      "id": "missing_system",
+      "category": "조회 대상 누락",
+      "expected_pass": false,
+      "before_pass": true,
+      "after_pass": false,
+      "issues": [
+        "missing_system"
+      ]
+    },
+    {
+      "id": "duplicate_system",
+      "category": "중복 근거",
+      "expected_pass": false,
+      "before_pass": true,
+      "after_pass": false,
+      "issues": [
+        "duplicate_system"
+      ]
+    },
+    {
+      "id": "missing_actions",
+      "category": "필수 항목 누락",
+      "expected_pass": false,
+      "before_pass": true,
+      "after_pass": false,
+      "issues": [
+        "missing_section",
+        "section_order"
+      ]
+    },
+    {
+      "id": "empty_limits",
+      "category": "필수 항목 누락",
+      "expected_pass": false,
+      "before_pass": true,
+      "after_pass": false,
+      "issues": [
+        "missing_section"
+      ]
+    },
+    {
+      "id": "unknown_as_zero",
+      "category": "미확인 수치 단정",
+      "expected_pass": false,
+      "before_pass": true,
+      "after_pass": false,
+      "issues": [
+        "unknown_measurement"
+      ]
+    },
+    {
+      "id": "extra_narrative_number",
+      "category": "근거 밖 수치",
+      "expected_pass": false,
+      "before_pass": true,
+      "after_pass": false,
+      "issues": [
+        "metric_mismatch"
+      ]
+    },
+    {
+      "id": "normality_contradiction",
+      "category": "정상 단정",
+      "expected_pass": false,
+      "before_pass": true,
+      "after_pass": false,
+      "issues": [
+        "unsupported_healthy_claim"
+      ]
+    },
+    {
+      "id": "confident_cause",
+      "category": "가설 단정",
+      "expected_pass": false,
+      "before_pass": true,
+      "after_pass": false,
+      "issues": [
+        "unqualified_cause"
+      ]
+    },
+    {
+      "id": "no_source",
+      "category": "근거 없음",
+      "expected_pass": false,
+      "before_pass": true,
+      "after_pass": false,
+      "issues": [
+        "missing_evidence",
+        "unsupported_system"
+      ]
+    },
+    {
+      "id": "bad_row_format",
+      "category": "해석 불가 표기",
+      "expected_pass": false,
+      "before_pass": true,
+      "after_pass": false,
+      "issues": [
+        "unparseable_evidence",
+        "missing_system"
+      ]
+    },
+    {
+      "id": "infinite_number",
+      "category": "해석 불가 수치",
+      "expected_pass": false,
+      "before_pass": true,
+      "after_pass": false,
+      "issues": [
+        "unparseable_evidence",
+        "missing_system"
+      ]
+    },
+    {
+      "id": "short_draft",
+      "category": "짧은 답변",
+      "expected_pass": false,
+      "before_pass": false,
+      "after_pass": false,
+      "issues": [
+        "unexpected_text",
+        "missing_section",
+        "missing_section",
+        "missing_section",
+        "missing_section",
+        "section_order",
+        "missing_system"
+      ]
+    },
+    {
+      "id": "legacy_correct_content",
+      "category": "정확하지만 자유형 답변",
+      "expected_pass": true,
+      "before_pass": true,
+      "after_pass": false,
+      "issues": [
+        "unexpected_text",
+        "missing_section",
+        "missing_section",
+        "missing_section",
+        "missing_section",
+        "section_order",
+        "missing_system"
+      ]
+    }
+  ]
+}

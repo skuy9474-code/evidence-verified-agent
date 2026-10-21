@@ -1,0 +1,112 @@
+[
+  {
+    "query": "auth-service 장애 진단",
+    "reply": "1) 모니터링 근거\n- auth-service | 상태=degraded | CPU=79.3% | 메모리=61.7%\n- web-01 | 상태=healthy | CPU=33.5% | 메모리=47.7%\n\n2) 원인 가설\n관측된 상태와 알림에 관련된 자원 또는 의존성 문제가 원인일 가능성이 있습니다. 원인은 추가 확인이 필요합니다.\n\n3) 권장 조치\n조회한 대응 매뉴얼의 점검 절차를 담당자와 함께 확인하세요.\n\n4) 한계\n제공된 값은 샘플 모니터링 데이터입니다. 실제 서버 상태나 원인은 확정할 수 없습니다. 미확인 시스템은 추가 연결이 필요하며 권장 조치는 자동 실행되지 않았습니다.",
+    "metadata": {
+      "route": "incident",
+      "task_count": 3,
+      "gate_removed": 1,
+      "replan_rounds": 1,
+      "retry_count": 1,
+      "parallel_elapsed": 0.36,
+      "validation_attempts": 2,
+      "validation_status": "passed",
+      "validation_report": {
+        "passed": true,
+        "issues": [],
+        "metrics_checked": 4,
+        "systems_checked": 2,
+        "scope": "수집 근거 대비 시스템·상태·CPU·메모리 일치 및 필수 항목 검사"
+      },
+      "cost_usd": 0.000966,
+      "llm_backend": "fake",
+      "supervisor_version": "v2",
+      "instance_id": 4491771472,
+      "langsmith_run_id": null
+    }
+  },
+  {
+    "query": "payments-service와 cache-service 장애 진단",
+    "reply": "1) 모니터링 근거\n- payments-service | 상태=degraded | CPU=95.7% | 메모리=57.4%\n- cache-service | 상태=degraded | CPU=45.6% | 메모리=90.8%\n- web-01 | 상태=healthy | CPU=36.5% | 메모리=49.3%\n\n2) 원인 가설\n관측된 상태와 알림에 관련된 자원 또는 의존성 문제가 원인일 가능성이 있습니다. 원인은 추가 확인이 필요합니다.\n\n3) 권장 조치\nget_monitoring_status로 CPU 사용률과 최근 배포/트래픽 변화 시점을 확인한다. 반복 호출, 배치 작업 중복 실행 같은 특정 요청 패턴이 원인인지 최근 로그에서 확인한다.\n\n4) 한계\n제공된 값은 샘플 모니터링 데이터입니다. 실제 서버 상태나 원인은 확정할 수 없습니다. 미확인 시스템은 추가 연결이 필요하며 권장 조치는 자동 실행되지 않았습니다.",
+    "metadata": {
+      "route": "incident",
+      "task_count": 4,
+      "gate_removed": 1,
+      "replan_rounds": 1,
+      "retry_count": 0,
+      "parallel_elapsed": 0.36,
+      "validation_attempts": 2,
+      "validation_status": "passed",
+      "validation_report": {
+        "passed": true,
+        "issues": [],
+        "metrics_checked": 6,
+        "systems_checked": 3,
+        "scope": "수집 근거 대비 시스템·상태·CPU·메모리 일치 및 필수 항목 검사"
+      },
+      "cost_usd": 0.001352,
+      "llm_backend": "fake",
+      "supervisor_version": "v2",
+      "instance_id": 4491771472,
+      "langsmith_run_id": null
+    }
+  },
+  {
+    "query": "billing-service 장애 진단",
+    "reply": "1) 모니터링 근거\n- billing-service | 상태=unknown | CPU=미확인 | 메모리=미확인\n- web-01 | 상태=healthy | CPU=33.2% | 메모리=47.6%\n\n2) 원인 가설\n관측된 상태와 알림에 관련된 자원 또는 의존성 문제가 원인일 가능성이 있습니다. 원인은 추가 확인이 필요합니다.\n\n3) 권장 조치\n모니터링 알람으로 장애를 즉시 인지한다 (get_monitoring_status로 현재 상태 확인). 커넥션 풀/리플리케이션 상태를 점검하고 필요 시 failover 노드로 전환한다.\n\n4) 한계\n제공된 값은 샘플 모니터링 데이터입니다. 실제 서버 상태나 원인은 확정할 수 없습니다. 미확인 시스템은 추가 연결이 필요하며 권장 조치는 자동 실행되지 않았습니다.",
+    "metadata": {
+      "route": "incident",
+      "task_count": 3,
+      "gate_removed": 1,
+      "replan_rounds": 1,
+      "retry_count": 0,
+      "parallel_elapsed": 0.36,
+      "validation_attempts": 1,
+      "validation_status": "passed",
+      "validation_report": {
+        "passed": true,
+        "issues": [],
+        "metrics_checked": 2,
+        "systems_checked": 2,
+        "scope": "수집 근거 대비 시스템·상태·CPU·메모리 일치 및 필수 항목 검사"
+      },
+      "cost_usd": 0.000551,
+      "llm_backend": "fake",
+      "supervisor_version": "v2",
+      "instance_id": 4491771472,
+      "langsmith_run_id": null
+    }
+  },
+  {
+    "stream_event_types": [
+      "RouteDecided",
+      "PlanCreated",
+      "GateApplied",
+      "TaskCompleted",
+      "TaskCompleted",
+      "ReplanCheck",
+      "TaskCompleted",
+      "ReplanCheck",
+      "AnalysisSkipped",
+      "DraftWritten",
+      "Validation",
+      "DraftWritten",
+      "Validation",
+      "Finalize",
+      "FinalAnswer"
+    ],
+    "final": {
+      "type": "FinalAnswer",
+      "reply": "1) 모니터링 근거\n- auth-service | 상태=degraded | CPU=77.3% | 메모리=60.6%\n- web-01 | 상태=healthy | CPU=33.4% | 메모리=47.7%\n\n2) 원인 가설\n관측된 상태와 알림에 관련된 자원 또는 의존성 문제가 원인일 가능성이 있습니다. 원인은 추가 확인이 필요합니다.\n\n3) 권장 조치\n조회한 대응 매뉴얼의 점검 절차를 담당자와 함께 확인하세요.\n\n4) 한계\n제공된 값은 샘플 모니터링 데이터입니다. 실제 서버 상태나 원인은 확정할 수 없습니다. 미확인 시스템은 추가 연결이 필요하며 권장 조치는 자동 실행되지 않았습니다.",
+      "prompt": null,
+      "validation_status": "passed",
+      "validation_report": {
+        "passed": true,
+        "issues": [],
+        "metrics_checked": 4,
+        "systems_checked": 2,
+        "scope": "수집 근거 대비 시스템·상태·CPU·메모리 일치 및 필수 항목 검사"
+      }
+    }
+  }
+]
