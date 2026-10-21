@@ -1,0 +1,15 @@
+{
+  "date": "2026-10-21",
+  "method": "manual browser interaction with the live local app via CUA",
+  "url": "http://127.0.0.1:8610",
+  "checks": {
+    "actual_model_label": true,
+    "single_system_final_pass_card": true,
+    "evidence_values_displayed": true,
+    "draft_hidden_until_validation": true,
+    "enter_while_sending_did_not_add_second_question": true,
+    "narrow_panel_layout_usable": true
+  },
+  "screenshot": "최종검수_실행화면.png (local outputs folder)",
+  "scope": "one browser session; not an automated cross-browser test suite"
+}

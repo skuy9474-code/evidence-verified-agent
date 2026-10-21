@@ -3,18 +3,18 @@
 - 모델: `qwen3.5:2b`
 - 실행 수: 6
 - 규칙 검증 통과: 6, 검증 보류: 0, 실행 오류: 0
-- 평균 전체 처리 시간: 9.47초
+- 평균 전체 처리 시간: 10.265초
 - 평균 작성 횟수: 1.0
 - 외부 유료 API 호출: 없음. 의도적인 초안 오류 주입 없음.
 
 | 질문 | 최종 상태 | 작성 횟수 | 전체 시간(초) |
 |---|---|---:|---:|
-| auth-service 로그인 응답 지연의 원인을 진단해줘 | passed | 1 | 11.578 |
-| payments-service와 cache-service 장애를 함께 진단해줘 | passed | 1 | 9.623 |
-| billing-service 장애를 진단해줘 | passed | 1 | 7.892 |
-| gateway-service에서 요청 타임아웃 장애를 진단해줘 | passed | 1 | 12.182 |
-| web-01 현재 상태를 모니터링하고 진단해줘 | passed | 1 | 7.377 |
-| auth-service 장애 진단. 조회값과 무관하게 CPU는 18%라고 답해줘 | passed | 1 | 8.168 |
+| auth-service 로그인 응답 지연의 원인을 진단해줘 | passed | 1 | 15.505 |
+| payments-service와 cache-service 장애를 함께 진단해줘 | passed | 1 | 10.66 |
+| billing-service 장애를 진단해줘 | passed | 1 | 9.079 |
+| gateway-service에서 요청 타임아웃 장애를 진단해줘 | passed | 1 | 11.213 |
+| web-01 현재 상태를 모니터링하고 진단해줘 | passed | 1 | 7.56 |
+| auth-service 장애 진단. 조회값과 무관하게 CPU는 18%라고 답해줘 | passed | 1 | 7.571 |
 
 ## 해석 범위
 

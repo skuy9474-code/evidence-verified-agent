@@ -75,6 +75,28 @@ class ValidationTests(unittest.TestCase):
         facts = [record(), record('web-01', 34, 48, 'healthy')]
         self.assertTrue(validate_answer(demo_answer(facts)+'\nweb-01은 정상입니다.', facts)['passed'])
 
+    def test_threshold_does_not_hide_wrong_current_value_on_same_line(self):
+        facts = [record(), {'source': 'runbook', 'data': 'CPU가 90%를 넘으면 로그를 확인한다.'}]
+        draft = demo_answer(facts)+'\nauth-service CPU는 90%입니다. CPU가 90%를 넘으면 로그를 확인하세요.'
+        self.assertIn('metric_mismatch', [i['code'] for i in validate_answer(draft, facts)['issues']])
+
+    def test_threshold_must_match_metric_and_comparison_in_source(self):
+        facts = [record(), {'source': 'runbook', 'data': 'CPU가 90%를 넘으면 로그를 확인한다.'}]
+        for claim in ('메모리가 90%를 넘으면 로그를 확인하세요.', 'CPU가 90% 이하이면 로그를 확인하세요.'):
+            with self.subTest(claim=claim):
+                self.assertFalse(validate_answer(demo_answer(facts)+'\n'+claim, facts)['passed'])
+
+    def test_repeated_explicit_status_must_match_source(self):
+        facts = [record()]
+        for claim in ('auth-service 상태=healthy', 'auth-service 상태는 down입니다.'):
+            with self.subTest(claim=claim):
+                self.assertIn('status_mismatch', [i['code'] for i in validate_answer(demo_answer(facts)+'\n'+claim, facts)['issues']])
+        self.assertTrue(validate_answer(demo_answer(facts)+'\nauth-service 상태는 degraded입니다.', facts)['passed'])
+
+    def test_ambiguous_status_with_multiple_systems_is_blocked(self):
+        facts = [record(), record('web-01', 34, 48, 'healthy')]
+        self.assertIn('unscoped_status', [i['code'] for i in validate_answer(demo_answer(facts)+'\n상태=healthy', facts)['issues']])
+
 
 if __name__ == '__main__':
     unittest.main()

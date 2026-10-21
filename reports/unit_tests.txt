@@ -1,0 +1,40 @@
+test_empty_or_oversized_questions_rejected_on_both_routes (test_api.ApiTests.test_empty_or_oversized_questions_rejected_on_both_routes) ... ok
+test_post_processing_failure_is_explicit_and_does_not_save_success (test_api.ApiTests.test_post_processing_failure_is_explicit_and_does_not_save_success) ... Chat processing failed: RuntimeError
+ok
+test_post_returns_validated_result_and_same_request_evidence (test_api.ApiTests.test_post_returns_validated_result_and_same_request_evidence) ... ok
+test_sse_blocked_result_never_exposes_failed_draft (test_api.ApiTests.test_sse_blocked_result_never_exposes_failed_draft) ... ok
+test_sse_processing_failure_has_error_and_done_without_final_answer (test_api.ApiTests.test_sse_processing_failure_has_error_and_done_without_final_answer) ... Stream processing failed: RuntimeError
+ok
+test_chat_remains_outside_incident_validation (test_graph.GraphTests.test_chat_remains_outside_incident_validation) ... ok
+test_incident_stream_never_exposes_unvalidated_draft (test_graph.GraphTests.test_incident_stream_never_exposes_unvalidated_draft) ... ok
+test_incorrect_number_is_rewritten_with_feedback (test_graph.GraphTests.test_incorrect_number_is_rewritten_with_feedback) ... ok
+test_three_failures_are_blocked_not_approved (test_graph.GraphTests.test_three_failures_are_blocked_not_approved) ... ok
+test_correct_json_is_readable_and_passes (test_structured_answers.StructuredAnswerTests.test_correct_json_is_readable_and_passes) ... ok
+test_korean_particles_and_multi_systems_are_preserved (test_structured_answers.StructuredAnswerTests.test_korean_particles_and_multi_systems_are_preserved) ... ok
+test_malformed_missing_and_boolean_answers_are_rejected (test_structured_answers.StructuredAnswerTests.test_malformed_missing_and_boolean_answers_are_rejected) ... ok
+test_renderer_preserves_wrong_values_so_validator_catches_them (test_structured_answers.StructuredAnswerTests.test_renderer_preserves_wrong_values_so_validator_catches_them) ... ok
+test_unknown_input_is_not_given_to_model_as_measured_zero (test_structured_answers.StructuredAnswerTests.test_unknown_input_is_not_given_to_model_as_measured_zero) ... ok
+test_unknown_null_is_not_rendered_as_zero (test_structured_answers.StructuredAnswerTests.test_unknown_null_is_not_rendered_as_zero) ... ok
+test_unknown_target_is_not_replaced_by_auth_service (test_structured_answers.StructuredAnswerTests.test_unknown_target_is_not_replaced_by_auth_service) ... ok
+test_ambiguous_status_with_multiple_systems_is_blocked (test_validation.ValidationTests.test_ambiguous_status_with_multiple_systems_is_blocked) ... ok
+test_correct_repeated_narrative_metric_is_accepted (test_validation.ValidationTests.test_correct_repeated_narrative_metric_is_accepted) ... ok
+test_duplicate_sources_fail_closed (test_validation.ValidationTests.test_duplicate_sources_fail_closed) ... ok
+test_each_metric_is_bound_to_its_system (test_validation.ValidationTests.test_each_metric_is_bound_to_its_system) ... ok
+test_fallback_never_invents_unknown_measurement (test_validation.ValidationTests.test_fallback_never_invents_unknown_measurement) ... ok
+test_healthy_named_system_is_not_confused_with_degraded_neighbor (test_validation.ValidationTests.test_healthy_named_system_is_not_confused_with_degraded_neighbor) ... ok
+test_invalid_source_values_never_pass (test_validation.ValidationTests.test_invalid_source_values_never_pass) ... ok
+test_narrative_multi_system_swaps_are_rejected (test_validation.ValidationTests.test_narrative_multi_system_swaps_are_rejected) ... ok
+test_repeated_explicit_status_must_match_source (test_validation.ValidationTests.test_repeated_explicit_status_must_match_source) ... ok
+test_sourced_conditional_threshold_is_separate_from_measurement (test_validation.ValidationTests.test_sourced_conditional_threshold_is_separate_from_measurement) ... ok
+test_synthetic_cases_and_known_format_limitation (test_validation.ValidationTests.test_synthetic_cases_and_known_format_limitation) ... ok
+test_threshold_does_not_hide_wrong_current_value_on_same_line (test_validation.ValidationTests.test_threshold_does_not_hide_wrong_current_value_on_same_line) ... ok
+test_threshold_must_match_metric_and_comparison_in_source (test_validation.ValidationTests.test_threshold_must_match_metric_and_comparison_in_source) ... ok
+test_uncollected_system_metrics_in_narrative_are_rejected (test_validation.ValidationTests.test_uncollected_system_metrics_in_narrative_are_rejected) ... ok
+test_unscoped_multi_system_metric_is_rejected (test_validation.ValidationTests.test_unscoped_multi_system_metric_is_rejected) ... ok
+test_validator_does_not_change_source (test_validation.ValidationTests.test_validator_does_not_change_source) ... ok
+test_wrong_repeated_narrative_metric_is_rejected (test_validation.ValidationTests.test_wrong_repeated_narrative_metric_is_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 33 tests in 3.863s
+
+OK

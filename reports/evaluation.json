@@ -11,7 +11,7 @@
       "detection_rate": 0.058823529411764705,
       "false_rejection_rate": 0.0,
       "accuracy": 0.30434782608695654,
-      "mean_validation_ms": 4.5216571458655856e-05
+      "mean_validation_ms": 4.508952691179255e-05
     },
     "after": {
       "total": 23,
@@ -24,7 +24,7 @@
       "detection_rate": 1.0,
       "false_rejection_rate": 0.16666666666666666,
       "accuracy": 0.9565217391304348,
-      "mean_validation_ms": 0.018515795945068417
+      "mean_validation_ms": 0.019891739104186065
     },
     "method": "23 fixed synthetic drafts; no LLM calls; same input per validator; includes one semantically correct legacy-format draft rejected by the strict contract; latency is local validation only, 100 repetitions per case"
   },

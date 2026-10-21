@@ -15,6 +15,38 @@ ROW = re.compile(
     r"CPU=([+-]?(?:\d+(?:\.\d+)?)\s*%|미확인)\s*\|\s*"
     r"메모리=([+-]?(?:\d+(?:\.\d+)?)\s*%|미확인)\s*$"
 )
+METRIC_CLAIM = re.compile(
+    r'(?P<label>CPU|메모리|memory)(?:\s*(?:사용률|사용량|점유율))?'
+    r'\s*(?:은|는|이|가|:|=|약|현재)?\s*(?P<value>[+-]?\d+(?:\.\d+)?)'
+    r'\s*(?:[%％]|퍼센트)?', re.I)
+CONDITION = re.compile(r'^\s*(?:를|을|가|이)?\s*(넘으면|초과하면|이상이면|이하이면)', re.I)
+
+
+def _metric_field(match):
+    return 'cpu_percent' if match['label'].lower() == 'cpu' else 'memory_percent'
+
+
+def _sourced_threshold(match, line, runbooks):
+    """같은 지표·수치·비교 조건만 예외로 둔다. 같은 줄의 현재값에는 적용하지 않는다."""
+    condition = CONDITION.match(line[match.end():])
+    if not condition:
+        return False
+    for source_line in runbooks.splitlines():
+        for source in METRIC_CLAIM.finditer(source_line):
+            source_condition = CONDITION.match(source_line[source.end():])
+            if (source_condition and _metric_field(source) == _metric_field(match)
+                    and _number(source['value']) == _number(match['value'])
+                    and source_condition[1] == condition[1]):
+                return True
+    return False
+
+
+def _claim_system(position, mentions, facts):
+    preceding = [(pos, name) for pos, name in mentions if pos < position]
+    names = {name for _, name in mentions}
+    return (max(preceding)[1] if preceding else
+            next(iter(names)) if len(names) == 1 else
+            next(iter(facts)) if len(facts) == 1 else None)
 
 
 def _number(value):
@@ -172,28 +204,20 @@ def validate_answer(draft, collected):
 
     narrative = '\n'.join(line for heading in HEADINGS[1:] for line in sections[heading])
     # 본문에 반복 인용된 현재 CPU/메모리도 동일 시스템에 묶어 대조한다.
-    claim = re.compile(r'(?P<label>CPU|메모리|memory)(?:\s*(?:사용률|사용량|점유율))?'
-                       r'\s*(?:은|는|이|가|:|=|약|현재)?\s*(?P<value>[+-]?\d+(?:\.\d+)?)'
-                       r'\s*(?:[%％]|퍼센트)?', re.I)
+    status_claim = re.compile(r'(?:상태|status)\s*(?:은|는|이|가|:|=)?\s*'
+                              r'(healthy|degraded|down|unknown)(?![a-zA-Z_-])', re.I)
     runbooks = '\n'.join(str(c.get('data', '')) for c in collected if c.get('source') == 'runbook')
     for line in narrative.splitlines():
         mentioned_names = explicit_targets(line, set(facts))
         mentions = [(m.start(), name) for name in mentioned_names
                     for m in re.finditer(r'(?<![a-zA-Z0-9_-])'+re.escape(name)+r'(?![a-zA-Z0-9_-])', line)]
-        for match in claim.finditer(line):
-            field = 'cpu_percent' if match['label'].lower() == 'cpu' else 'memory_percent'
+        for match in METRIC_CLAIM.finditer(line):
+            field = _metric_field(match)
             actual = _number(match['value'])
             # 명시적인 조건문 속 임계값은 현재 측정치와 별개다. 원문에 있는 조건만 허용한다.
-            conditional = re.search(r'넘으면|초과하면|이상이면|이하이면|임계값|threshold', line, re.I)
-            threshold_pattern = (r'(?:CPU|메모리|memory)[^\n]{0,30}?'
-                                 + re.escape(match['value']) + r'\s*%')
-            if conditional and re.search(threshold_pattern, runbooks, re.I):
+            if _sourced_threshold(match, line, runbooks):
                 continue
-            preceding = [(pos, name) for pos, name in mentions if pos < match.start()]
-            names = set(name for _, name in mentions)
-            name = (max(preceding)[1] if preceding else
-                    next(iter(names)) if len(names) == 1 else
-                    next(iter(facts)) if len(facts) == 1 else None)
+            name = _claim_system(match.start(), mentions, facts)
             if name is None:
                 add('unscoped_metric', '본문의 CPU/메모리 수치가 어느 시스템 값인지 명시하세요.')
                 continue
@@ -205,6 +229,16 @@ def validate_answer(draft, collected):
             elif actual != _number(facts[name].get(field)):
                 add('metric_mismatch', f'{name}: 본문 {match["label"]} 수치가 수집 근거와 다릅니다.',
                     system=name, field=field, expected=facts[name].get(field), actual=match['value'])
+        for match in status_claim.finditer(line):
+            name = _claim_system(match.start(), mentions, facts)
+            actual = match[1].lower()
+            if name is None:
+                add('unscoped_status', '본문의 상태가 어느 시스템 값인지 명시하세요.')
+            elif name not in facts:
+                add('unsupported_system', f'{name}: 본문에 미조회 시스템의 상태를 작성했습니다.', system=name)
+            elif actual != facts[name].get('status'):
+                add('status_mismatch', f'{name}: 본문 상태가 수집 근거와 다릅니다.',
+                    system=name, expected=facts[name].get('status'), actual=actual)
     cause = ' '.join(sections[HEADINGS[1]])
     if cause and not re.search(r'가능|추정|가설|의심|확정할 수 없|판단할 수 없|추가 확인', cause):
         add('unqualified_cause', '원인 가설에는 가능성 또는 추가 확인이 필요함을 명시하세요.')

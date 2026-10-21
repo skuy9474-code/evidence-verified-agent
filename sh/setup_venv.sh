@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 #
-# all_total_vue — 이 프로젝트 전용 .venv를 만들고 requirements.txt를 설치하는 스크립트.
+# 이 프로젝트 전용 .venv를 만들고 검증된 고정 버전 의존성을 설치한다.
 #
-# 다른 sh/ 스크립트들(run_agent_ollma.sh 등)은 ".venv가 이미 있으면 쓴다"고만
-# 가정할 뿐 직접 만들어주지는 않는다 — 이 스크립트가 그 "맨 처음 한 번"을 담당한다.
+# 실행 스크립트는 준비된 가상환경을 사용하므로, 이 파일이 최초 설치를 담당한다.
 # 깨끗한 환경에서 이 폴더를 처음 받았다면(학생 배포 등) 가장 먼저 이걸 실행한다.
 #
 # ⚠️ 이 머신은 plain python3/pip가 alias로 엉뚱한 경로를 가리켜, venv를 만들어도
@@ -19,6 +18,8 @@ cd "$(dirname "$0")/.."
 
 command -v python3 >/dev/null 2>&1 \
     || { echo "ERROR: python3가 설치되어 있지 않습니다."; exit 1; }
+python3 -c 'import sys; sys.exit(0 if sys.version_info >= (3, 11) else 1)' \
+    || { echo "ERROR: Python 3.11 이상이 필요합니다. README의 uv 설치 방법을 참고하세요."; exit 1; }
 
 # ── 1) .venv 생성 (이미 있으면 건너뜀) ──────────────────────────────────
 if [ -x ".venv/bin/python3" ]; then
@@ -31,10 +32,9 @@ fi
 # ── 2) 의존성 설치 — activate 대신 .venv의 python3를 직접 호출 ─────────
 #    (plain pip/python3가 alias로 다른 경로를 가리키는 머신에서도 항상
 #     .venv 안에 정확히 설치되도록 보장한다)
-echo "requirements.txt 설치 중..."
+echo "requirements-lock.txt 설치 중..."
 ./.venv/bin/python3 -m pip --version >/dev/null 2>&1 || ./.venv/bin/python3 -m ensurepip --upgrade
-./.venv/bin/python3 -m pip install --upgrade pip --quiet
-./.venv/bin/python3 -m pip install -r requirements.txt
+./.venv/bin/python3 -m pip install -r requirements-lock.txt
 
 echo
 echo "설치 확인:"
@@ -46,10 +46,15 @@ cat <<EOF
  .venv 준비 완료
 ################################################################
 
-이제 아래 중 하나로 에이전트를 띄울 수 있습니다:
-  bash sh/run_agent_ollma.sh     (로컬 Ollama)
-  bash sh/run_agent_openai.sh    (OpenAI API, 과금)
+별도 터미널에서 Ollama를 실행하고 설치된 모델을 확인하세요:
+  ollama serve
+  ollama list
 
-Ollama를 처음 쓰거나 모델을 다시 받아야 하면 먼저:
-  bash sh/setup_ollama.sh
+실제 로컬 모델 실행:
+  .venv/bin/python sh/run_demo.py --backend ollama
+
+모델 없이 재작성 흐름만 시연:
+  .venv/bin/python sh/run_demo.py --backend fake
+
+접속: http://127.0.0.1:8610
 EOF

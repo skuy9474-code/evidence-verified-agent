@@ -10,17 +10,18 @@
 """
 import json
 import os
+import logging
 from contextlib import asynccontextmanager
 
 from dotenv import load_dotenv
 
 load_dotenv()   # LANGCHAIN_TRACING_V2 / API_KEY / PROJECT — import보다 먼저
 
-from fastapi import FastAPI
-from fastapi.responses import StreamingResponse
+from fastapi import FastAPI, Query
+from fastapi.responses import JSONResponse, StreamingResponse
 from langsmith import traceable
 from langsmith.run_helpers import get_current_run_tree
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
 
 from agent.deps import SupervisorDeps
 from agent.fake_llm import FastLLM, QualityLLM
@@ -30,11 +31,19 @@ from agent.session_store import SqliteSessionStore
 from agent.supervisor_v1 import run_v1
 
 CREATION_COUNT = 0   # Wave 1 — 프로세스 내 Agent 번들 생성 횟수 (항상 1이어야 정상)
+logger = logging.getLogger(__name__)
+REQUEST_ERROR = {'code': 'processing_unavailable',
+                 'message': '진단 처리를 완료하지 못했습니다. 모델·자료 조회 연결을 확인한 뒤 다시 요청해 주세요. 검증된 최종 답변은 생성되지 않았습니다.'}
 
 
 class ChatRequest(BaseModel):   # Wave 1 — Pydantic 요청 검증
-    message: str
-    thread_id: str = "default"
+    message: str = Field(min_length=1, max_length=4000)
+    thread_id: str = Field(default="default", min_length=1, max_length=128)
+
+    @field_validator('message', 'thread_id', mode='before')
+    @classmethod
+    def strip_text(cls, value):
+        return value.strip() if isinstance(value, str) else value
 
 
 def _build_llms():
@@ -144,18 +153,29 @@ async def _handle_chat(message: str, thread_id: str) -> tuple[dict, str | None]:
 
 @app.post("/chat")
 async def chat(req: ChatRequest):
-    result, run_id = await _handle_chat(req.message, req.thread_id)
+    try:
+        result, run_id = await _handle_chat(req.message, req.thread_id)
+    except Exception as exc:
+        logger.error('Chat processing failed: %s', type(exc).__name__)
+        return JSONResponse({'error': REQUEST_ERROR}, status_code=503)
     return {"reply": result["final"], "events": result.get("events", []),
             "metadata": _metadata(result, run_id)}
 
 
 @app.get("/chat/stream")
-async def chat_stream(message: str, thread_id: str = "default"):
+async def chat_stream(message: str = Query(min_length=1, max_length=4000),
+                      thread_id: str = Query(default="default", min_length=1, max_length=128)):
     """Wave 3 — 그래프의 노드별 진행 상황을 SSE로 스트리밍.
 
     이벤트마다 'data: {json}\\n\\n' 형태로 내려보내고 마지막에 data: [DONE] 센티널을
     보낸다 — 프론트엔드는 \\n\\n 경계로 이벤트를 분리해 파싱해야 한다(Wave 3b).
     """
+    # POST와 SSE에 동일한 공백·길이 검사를 적용한다.
+    try:
+        request = ChatRequest(message=message, thread_id=thread_id)
+    except ValueError:
+        return JSONResponse({'error': {'code': 'invalid_request', 'message': '질문과 대화 ID를 입력해 주세요.'}}, status_code=422)
+    message, thread_id = request.message, request.thread_id
     deps = app.state.deps
 
     async def gen():
@@ -198,7 +218,16 @@ async def chat_stream(message: str, thread_id: str = "default"):
             deps.session_store.append(thread_id, "assistant", final)
         yield "data: [DONE]\n\n"
 
-    return StreamingResponse(gen(), media_type="text/event-stream")
+    async def guarded_gen():
+        try:
+            async for event in gen():
+                yield event
+        except Exception as exc:
+            logger.error('Stream processing failed: %s', type(exc).__name__)
+            yield f"data: {json.dumps({'type': 'Error', **REQUEST_ERROR}, ensure_ascii=False)}\n\n"
+            yield "data: [DONE]\n\n"
+
+    return StreamingResponse(guarded_gen(), media_type="text/event-stream")
 
 
 if __name__ == "__main__":

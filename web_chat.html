@@ -178,7 +178,7 @@ createApp({
 
     function onSubmit() {
       const text = input.value.trim();
-      if (!text) return;
+      if (!text || sending.value) return;
 
       log.value.push({ id: nextId++, kind: 'user', text });
       input.value = '';
@@ -198,6 +198,13 @@ createApp({
         if (event.data === '[DONE]') { es.close(); sending.value = false; return; }
         let e;
         try { e = JSON.parse(event.data); } catch { return; }
+
+        if (e.type === 'Error') {
+          es.close(); sending.value = false;
+          log.value.push({ id: nextId++, kind: 'agent', text: e.message });
+          scrollToBottom();
+          return;
+        }
 
         if (e.type === 'AnswerToken') {
           if (!streamItem || streamAttempt !== e.attempt) {

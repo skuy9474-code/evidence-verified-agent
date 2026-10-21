@@ -21,7 +21,8 @@ class FaultOnce(OllamaQualityLLM):
         original = draft
         if attempt == 1:
             draft = re.sub(r'CPU=([0-9.]+)%', lambda m: f'CPU={float(m[1])+10}%', draft, count=1)
-        self.calls.append({'attempt': attempt, 'model_original_draft': original,
+        self.calls.append({'attempt': attempt, 'feedback_received': feedback,
+                           'model_original_draft': original,
                            'injected': draft != original, 'draft_submitted_to_validator': draft,
                            'report': validate_answer(draft, collected)})
         return draft, usage
